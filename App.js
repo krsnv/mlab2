@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, RefreshControl, Text, Image, View } from 'react-native';
+import { FlatList, StyleSheet, RefreshControl, Text, Image, View } from 'react-native';
 
 const programmingLanguages = [
   {
@@ -34,36 +34,34 @@ export default function App() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    // Чтобы заработал PtR используем имитацию загрузки
+    // Симуляция обновления данных
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   };
 
   return (
-    <ScrollView
-      style={styles.container}
+    <FlatList
+      data={programmingLanguages}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item }) => (
+        <ProgrammingLanguageCard
+          name={item.name}
+          experience={item.experience}
+          logo={item.logo}
+        />
+      )}
+      contentContainerStyle={styles.contentContainer}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-    >
-      {programmingLanguages.map((lang, index) => (
-        <ProgrammingLanguageCard
-          key={index}
-          name={lang.name}
-          experience={lang.experience}
-          logo={lang.logo}
-        />
-      ))}
-    </ScrollView>
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    paddingTop: 48,
+  contentContainer: {
+    paddingTop: 64,
   },
   card: {
     padding: 20,
